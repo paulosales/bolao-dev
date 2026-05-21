@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bolao_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: bolao_copa
+      MYSQL_USER: bolao
+      MYSQL_PASSWORD: bolao123
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database/migrations/001_create_tables.sql:/docker-entrypoint-initdb.d/01_create_tables.sql
+      - ./backend/database/seeds/001_teams.sql:/docker-entrypoint-initdb.d/02_teams.sql
+      - ./backend/database/seeds/002_matches.sql:/docker-entrypoint-initdb.d/03_matches.sql
+    networks:
+      - bolao_net
+
+  backend:
+    build: ../bolao-backend
+    container_name: bolao_backend
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ../bolao-backend:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: bolao_copa
+      DB_USER: bolao
+      DB_PASS: bolao123
+      JWT_SECRET: Inyp4y9ucvbm8LVoAi5k0N5HjHXMG0f4Gfb9IAu8AgMIFMSKFvVjWY6Ved3sirOO3hbOwbeKCPwaZuJ6zBsdrA
+      APP_URL: http://localhost:5173
+    networks:
+      - bolao_net
+
+  frontend:
+    image: node:20-alpine
+    container_name: bolao_frontend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ../bolao-frontend:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8080/api
+    networks:
+      - bolao_net
+
+volumes:
+  mysql_data:
+
+networks:
+  bolao_net:
+    driver: bridge
