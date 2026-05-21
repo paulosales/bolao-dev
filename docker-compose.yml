@@ -14,9 +14,9 @@ services:
       - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./backend/database/migrations/001_create_tables.sql:/docker-entrypoint-initdb.d/01_create_tables.sql
-      - ./backend/database/seeds/001_teams.sql:/docker-entrypoint-initdb.d/02_teams.sql
-      - ./backend/database/seeds/002_matches.sql:/docker-entrypoint-initdb.d/03_matches.sql
+      - ../bolao-backend/database/migrations/001_create_tables.sql:/docker-entrypoint-initdb.d/01_create_tables.sql
+      - ../bolao-backend/database/seeds/001_teams.sql:/docker-entrypoint-initdb.d/02_teams.sql
+      - ../bolao-backend/database/seeds/002_matches.sql:/docker-entrypoint-initdb.d/03_matches.sql
     networks:
       - bolao_net
 
