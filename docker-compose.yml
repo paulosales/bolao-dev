@@ -14,8 +14,9 @@ services:
       - mysql_data:/var/lib/mysql
       - ../bolao-backend/database/migrations/001_create_tables.sql:/docker-entrypoint-initdb.d/01_create_tables.sql
       - ../bolao-backend/database/migrations/002_add_winner_points.sql:/docker-entrypoint-initdb.d/02_add_winner_points.sql
-      - ../bolao-backend/database/seeds/001_teams.sql:/docker-entrypoint-initdb.d/03_teams.sql
-      - ../bolao-backend/database/seeds/002_matches.sql:/docker-entrypoint-initdb.d/04_matches.sql
+      - ../bolao-backend/database/migrations/003_add_quota_paid_and_prize_pct.sql:/docker-entrypoint-initdb.d/03_quota_prize.sql
+      - ../bolao-backend/database/seeds/001_teams.sql:/docker-entrypoint-initdb.d/04_teams.sql
+      - ../bolao-backend/database/seeds/002_matches.sql:/docker-entrypoint-initdb.d/05_matches.sql
     networks:
       - bolao_net
 
